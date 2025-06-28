@@ -1,9 +1,6 @@
+{ config, pkgs, ... }:
 
-{ config, pkgs, inputs, ... }:
-
-let
-  ghosttyPkg = inputs.ghostty.packages.${pkgs.system}.default;
-in {
+{
   home.username = "sanght";
   home.homeDirectory = "/home/sanght";
 
@@ -12,7 +9,7 @@ in {
   programs.zsh.enable = true;
 
   home.packages = with pkgs; [
-    ghosttyPkg
+    alacritty
     neovim
     git
     waybar
@@ -58,7 +55,7 @@ in {
         "hyprlock"
       ];
       bind = [
-        "SUPER, Return, exec, ghostty"
+        "SUPER, Return, exec, alacritty"
         "SUPER, D, exec, wofi --show drun"
         "SUPER, Q, killactive,"
         "SUPER, L, exec, hyprlock"

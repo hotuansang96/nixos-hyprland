@@ -6,23 +6,16 @@
     home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
-    ghostty.url = "github:ghostty-org/ghostty";
   };
 
-  outputs = { nixpkgs, home-manager, catppuccin, ghostty, ... }@inputs: {
+  outputs = { nixpkgs, home-manager, catppuccin, ... }@inputs: {
     nixosConfigurations.macvm = nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
-      pkgs = import nixpkgs {
-        system = "aarch64-linux";
-      };
-
       modules = [
         ./hosts/macvm.nix
         home-manager.nixosModules.home-manager
         {
-          home-manager.users.sanght = import ./home/sanght.nix {
-            inherit pkgs inputs;
-          };
+          home-manager.users.sanght = import ./home/sanght.nix;
         }
       ];
     };
