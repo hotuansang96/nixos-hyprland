@@ -22,6 +22,7 @@
   services.displayManager.defaultSession = "hyprland";
 
   programs.hyprland.enable = true;
+  programs.zsh.enable = true;
 
   sound.enable = true;
   hardware.pulseaudio.enable = false;
@@ -32,6 +33,8 @@
     alsa.enable = true;
     jack.enable = true;
   };
+
+  boot.loader.grub.device = "/dev/vda";
 
   system.stateVersion = "24.05";
 }
