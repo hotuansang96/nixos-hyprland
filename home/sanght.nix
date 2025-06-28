@@ -1,6 +1,9 @@
-{ config, pkgs, ... }:
 
-{
+{ config, pkgs, inputs, ... }:
+
+let
+  ghosttyPkg = inputs.ghostty.packages.${pkgs.system}.default;
+in {
   home.username = "sanght";
   home.homeDirectory = "/home/sanght";
 
@@ -9,7 +12,7 @@
   programs.zsh.enable = true;
 
   home.packages = with pkgs; [
-    ghostty
+    ghosttyPkg
     neovim
     git
     waybar
@@ -63,4 +66,3 @@
     };
   };
 }
-

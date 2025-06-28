@@ -16,7 +16,9 @@
         ./hosts/macvm.nix
         home-manager.nixosModules.home-manager
         {
-          home-manager.users.sanght = import ./home/sanght.nix;
+          home-manager.users.sanght = import ./home/sanght.nix {
+            inherit pkgs inputs;
+          };
         }
       ];
     };
