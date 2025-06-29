@@ -1,49 +1,59 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.hostName = "sanght";
-  networking.networkmanager.enable = true;
-
+  networking.hostName = "macbook-utmm3";
   time.timeZone = "Asia/Ho_Chi_Minh";
+
   i18n.defaultLocale = "en_US.UTF-8";
+  console.keyMap = "us";
 
   users.users.sanght = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "input" ];
+    extraGroups = [ "wheel" "network" "video" "audio" ];
     shell = pkgs.zsh;
   };
 
+  services.getty.autologin = {
+    enable = true;
+    user = "sanght";
+  };
+
+  environment.systemPackages = with pkgs; [
+    git vim wget curl neofetch
+  ];
+
+  programs.zsh.enable = true;
+
   services.xserver.enable = true;
-  services.xserver.displayManager.sddm.enable = false;
-  services.xserver.windowManager.hyprland.enable = true;
+  services.xserver.displayManager.startx.enable = true;
 
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    git
-    neovim
-    wget
-    curl
-    unzip
-    hyprland
-    kitty
-    firefox
-    brightnessctl
-    zsh
-  ];
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_CURRENT_DESKTOP = "Hyprland";
+    GDK_BACKEND = "wayland,x11";
+  };
 
-  security.pam.services.hyprlock.enable = true;
+  sound.enable = true;
+  security.rtkit.enable = true;
 
-  fonts.packages = with pkgs; [
-    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" ]; })
-  ];
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+  };
 
-  programs.zsh.enable = true;
+  system.stateVersion = "24.05";
 }
+
