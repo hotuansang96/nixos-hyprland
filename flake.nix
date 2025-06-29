@@ -3,22 +3,32 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
   };
 
-  outputs = { nixpkgs, home-manager, catppuccin, ... }@inputs: {
-    nixosConfigurations.macvm = nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs:
+    let
       system = "aarch64-linux";
-      modules = [
-        ./hosts/macvm.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.users.sanght = import ./home/sanght.nix;
-        }
-      ];
-    };
-  };
-}
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in {
+      nixosConfigurations.sanght = nixpkgs.lib.nixosSystem {
+        inherit system;
 
+        modules = [
+          ./hosts/sanght/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.sanght = import ./home/sanght/home.nix;
+          }
+          catppuccin.nixosModules.catppuccin
+        ];
+      };
+    };
+}
